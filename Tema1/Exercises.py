@@ -17,10 +17,12 @@ def isAdditionAssociative():
   return (x + y) + z == x + (y + z)
 
 def isMultiplicationAssociative():
+  count = 0
   x = random.random()
   y = random.random()
   z = random.random()
   while (x * y) * z == x * (y * z):
+    count += 1
     x = random.random()
     y = random.random()
     z = random.random()
@@ -29,37 +31,42 @@ def isMultiplicationAssociative():
     "first": x,
     "second": y,
     "third": z,
+    "count": count,
   }
 
 def t4(a):
   denominator = 105 * a - 10 * a ** 3
   nominator = 105 - 45 * a ** 2 + a ** 4
-  return nominator / denominator
+  return denominator / nominator
 
 def t5(a):
   denominator = 945 * a - 105 * a ** 3 + a ** 5
   nominator = 945 - 420 * a ** 2 + 15 * a ** 4
-  return nominator / denominator
+  return denominator / nominator
+
 
 def t6(a):
   denominator = 10395 * a - 1260 * a ** 3 + 21 * a ** 5
   nominator = 10395 - 4725 * a ** 2 + 210 * a ** 4 - a ** 6
-  return nominator / denominator
+  return denominator / nominator
+
 
 def t7(a):
   denominator = 135135 * a - 17325 * a ** 3 + 378 * a ** 5 - a ** 7
   nominator = 135135 -  62370 * a ** 2 + 3150 * a ** 4 - 28 * a ** 6
-  return nominator / denominator
+  return denominator / nominator
+
 
 def t8(a):
   denominator = 2027025 * a - 270270 * a ** 3 + 6930 * a ** 5 - 36 * a ** 7
   nominator = 2027025 -  945945 * a ** 2 + 51975 * a ** 4 - 630 * a ** 6 + a ** 8
-  return nominator / denominator
+  return denominator / nominator
+
 
 def t9(a):
   denominator = 34459425 * a - 4729725 * a ** 3 + 135135 * a ** 5 - 990 * a ** 7 + a ** 9
   nominator = 34459425 - 16216200 * a ** 2 + 945945 * a ** 4 - 13860 * a ** 6 + 45 * a ** 8
-  return nominator / denominator
+  return denominator / nominator
 
 def buildFunctionsHierarchy():
   randomNumbers = [random.uniform(-math.pi / 2, math.pi / 2) for i in range(10000)]
@@ -186,4 +193,3 @@ def main():
     print('Invalid number')
 
 main()
-
