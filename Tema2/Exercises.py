@@ -21,12 +21,18 @@ def crout(A):
 
 def crout_restricted(A):
     n = len(A)
-    for p in range(n):
-        for i in range(p, n):
-            A[i, p] = A_init[i, p] - np.sum(A[i, :p] * A[:p, p])
-        for i in range(p + 1, n):
-            if np.abs(A[p, p]) > e:
-                A[p, i] = (A_init[p, i] - np.sum(A[p, :p] * A[:p, i])) / A[p, p]
+    try:
+        for p in range(n):
+            for i in range(p, n):
+                A[i, p] = A_init[i, p] - np.sum(A[i, :p] * A[:p, p])
+            for i in range(p + 1, n):
+                if np.abs(A[p, p]) > e:
+                    A[p, i] = (A_init[p, i] - np.sum(A[p, :p] * A[:p, i])) / A[p, p]
+                else:
+                    raise Exception(f"LU nu se poate descompune, det(A_{p + 1}) = 0")
+    except Exception as exception:
+        print(exception)
+        exit()
     return A
 
 
