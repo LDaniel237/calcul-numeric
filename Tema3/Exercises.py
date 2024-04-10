@@ -1,6 +1,7 @@
 import math
 import copy
 import numpy as np
+import random
 
 def productMatrix(A, x):
     rez = [0 for i in range(0, len(A))]
@@ -12,32 +13,34 @@ def productMatrix(A, x):
 def Euclid(x):
     return math.sqrt(sum(x[i]**2 for i in range(0, len(x))))
 
-def decr_vect(a, b):
+def subtract_vect(a, b):
     x = [a[i]-b[i] for i in range(0, len(a))]
     return x
 
-M = [[0, 1, 0],
-     [1, 0, 0],
-     [0, 0, 1]]
+# A = [[0, 1, 0],
+#      [1, 0, 0],
+#      [0, 0, 1]]
 
-s = [1, 2, 3]
+# s = [1, 2, 3]
 
-'''
-A = [[0, 0, 4, 1],
-     [1, 2, 3, 2],
+opt = int(input("Dati optiunea: \n 1. Matrice generata random de dimensiunea n \n 2. Matrice data de mine \n"))
+if opt == 1:
+    n = int(input("Dati dimensiunea matricei: "))
+    A = [[random.randint(1, 10) for j in range(n)] for i in range(n)]
+    s = [random.randint(1, 10) for i in range(n)]
+else:
+    A = [[0, 0, 4, 1],
+     [0, 0, 4, 1],
      [0, 1, 2, 3],
      [1, 1, 1, 1]]
 
-s = [3, 2, 1, 4]
-'''
+    s = [3, 2, 1, 4]
 
 def displayMatrix(A):
-  # display the matrix formatted so that each row is on a separate line, and it is easy to see the elements
   for i in range(len(A)):
     print(A[i])
-   
 
-epsilon = 0.000000000000001
+epsilon = 0.000000000001
 
 def getB(a, s):
     n = len(a)
@@ -48,8 +51,8 @@ def getB(a, s):
 
     return b
 
-b = getB(M, s)
-print("Exercitiul I")
+b = getB(A, s)
+print("Ex I")
 print("Vectorul b:")
 print(b)
 print()
@@ -67,7 +70,6 @@ def getQR(a, b):
         QTemp[i][i] = 1    
         
     for r in range(0, n-1):
-
         sigma = sum([a[i][r]**2 for i in range(r, n)])
 
         if (sigma <= epsilon):
@@ -112,8 +114,8 @@ def getQR(a, b):
     QTb = b
     return R, QT, QTb
 
-R, QT, QTb = getQR(M, b)
-print("Exercitiul II")
+R, QT, QTb = getQR(A, b)
+print("Ex II")
 print("Matricea R:")
 displayMatrix(R)
 print()
@@ -133,15 +135,18 @@ def solveEQ(a, b):
         sum = 0
         for j in range(i, n):
             sum += a[i][j]*x[j]
+        if(abs(a[i][i]) <= epsilon):
+            print("matrice singulara")
+            return None
         x[i] = (b[i] - sum) / a[i][i]
     return x
 
 xHH = solveEQ(R, QTb)
-print("Exercitiul III")
+print("Ex III")
 print("x:")
 print(xHH)
 
-AQR = np.array(M)
+AQR = np.array(A)
 bQR = np.array(b)
 QQR, RQR = np.linalg.qr(AQR)
 pQR = np.dot(QQR.T, bQR)
@@ -151,17 +156,17 @@ xQR = np.ndarray.tolist(xQR)
 print("xQR:")
 print(xQR)
 print("||xQR - XHH||")
-print(Euclid(decr_vect(xQR, xHH)), '\n')
+print(Euclid(subtract_vect(xQR, xHH)), '\n')
 
-print("Exercitiul IV")
+print("Ex IV")
 print("||Ainit * xHH - binit||")
-print(Euclid(decr_vect(productMatrix(M, xHH),b)), "\n")
+print(Euclid(subtract_vect(productMatrix(A, xHH),b)), "\n")
 print("||Ainit * xQR - binit||")
-print(Euclid(decr_vect(productMatrix(M, xQR), b)),  "\n")
+print(Euclid(subtract_vect(productMatrix(A, xQR), b)),  "\n")
 print("||xHH - s|| / ||s||")
-print(Euclid(decr_vect(xHH, s)) / Euclid(s), "\n")
+print(Euclid(subtract_vect(xHH, s)) / Euclid(s), "\n")
 print("||xQR - s|| / ||s||")
-print(Euclid(decr_vect(xQR, s)) / Euclid(s) ,"\n")
+print(Euclid(subtract_vect(xQR, s)) / Euclid(s) ,"\n")
 
 def invMatrix(a):
     n = len(a)
@@ -175,7 +180,7 @@ def invMatrix(a):
     
     return Ainv
 
-Ainv = invMatrix(M)
-print("Exercitiul V")
+Ainv = invMatrix(A)
+print("Ex V")
 print("Inversa matricii A:")
 displayMatrix(Ainv)
