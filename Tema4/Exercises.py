@@ -13,7 +13,7 @@ def memorareEco(data):
     return matrix
 
 
-def memorareComp(data):
+def memorareCSR(data):
     values = []
     ind_col = []
     inceput_linii = []
@@ -32,16 +32,14 @@ def cititFisier(nume_fisier):
         lines = f.readlines()
         for line in lines:
             elements = line.split(",")
-            elements = [elem.strip() for elem in elements]  # Eliminăm spațiile albe din jurul elementelor
-            if len(elements) == 1 and elements[0]:  # Verificăm dacă linia nu este goală și conține un element
+            elements = [elem.strip() for elem in elements]
+            if len(elements) == 1 and elements[0]: 
                 data.append((int(elements[0]), None, None))
             elif len(elements) == 3:
                 value = float(elements[0])
                 row = int(elements[1])
                 col = int(elements[2])
                 data.append((value, row, col))
-            else:
-                print(f"Linie ignorată: {line.strip()}")  # Afisăm linia care a fost ignorată din cauza formatului nevalid
     return data
 
 
@@ -94,26 +92,33 @@ def gaussSeidel2(values, ind_col, inceput_linii, b, max_iter=1000):
     n = len(b)
     x = [0] * n
     for it_count in range(max_iter):
-        x_old = x[:]
+        converged = True
+
         for i in range(n):
+            sum1 = 0.0 
+            sum2 = 0.0
+            diag_value = 0.0
+
             start = inceput_linii[i]
             end = inceput_linii[i + 1]
-            sum1 = 0.0
-            sum2 = 0.0
             for j in range(start, end):
                 if ind_col[j] < i:
                     sum1 += values[j] * x[ind_col[j]]
                 elif ind_col[j] > i:
-                    sum2 += values[j] * x_old[ind_col[j]]
+                    sum2 += values[j] * x[ind_col[j]]
                 else:
-                    diag_index = j
-            x[i] = (b[i] - sum1 - sum2) / values[diag_index]
-        if all(abs(x[i] - x_old[i]) < eps for i in range(n)):
+                    diag_value = values[j]
+
+            new_xi = (b[i] - sum1 - sum2) / diag_value
+            if abs(new_xi - x[i]) >= eps:
+                converged = False
+            x[i] = new_xi  
+
+        if converged:
             break
         if any(x[i] is None or abs(x[i]) == float('inf') for i in range(n)):
             return None, it_count + 1
     return x, it_count + 1
-
 
 def calculareNorma(A, x_gs, b):
     n = len(b)
@@ -151,20 +156,20 @@ def main():
     data = cititFisier(nume_fisier1)
     b = cititVector(nume_fisier2)
     A = memorareEco(data)
-    values, ind_col, inceput_linii = memorareComp(data)
+    values, ind_col, inceput_linii = memorareCSR(data)
     diagVerif(A, data[0][0])
     solution, iterations = gaussSeidel(A, b)
     solution2, iterations2 = gaussSeidel2(values, ind_col, inceput_linii, b)
-    print("A(Prima memorare):")
+    print("A(Memorare 1):")
     for each in range(0, 5):
         print(A[each])
     print("\n")
-    print("A(A doua memorare):")
+    print("A(Memorare 2):")
     print(f"Valori", values[:5])
     print(f"Indici coloane", ind_col[:5])
     print(f"Inceput linii", inceput_linii[:5])
     print("\n")
-    print("Prima memorare Gauss Seidel:")
+    print("Memorare 1 Gauss Seidel:")
     if solution is not None:
         print("Solutie:", solution[-10:-1])
         norma = calculareNorma(A, solution, b)
@@ -172,15 +177,13 @@ def main():
     else:
         print("Divergenta")
     print("\n")
-    print("A doua memorare Gauss Seidel:")
+    print("Memorare 2 Gauss Seidel:")
     if solution2 is not None:
         print("Solutie:", solution2[-10:-1])
         norma = calculareNorma(A, solution2, b)
         print("Norma:", norma,";","Numar de iteratii", iterations2)
     else:
         print("Divergenta")
-
-
 
 if __name__ == "__main__":
     main()
